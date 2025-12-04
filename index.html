@@ -1,177 +1,202 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Simulador Aviator — Pro</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Aviator — Premium</title>
 
 <style>
-  :root{
-    --bg:#0b0b16; --panel:#171a26; --card:#1f2333; --text:#eaf3ff;
-    --muted:#97a0b5; --accent:#00ffcc; --accent-2:#27e1ff; --ok:#17d47b; --bad:#ff5577; --warn:#ffc857;
-    --border:#2a3045; --shadow:0 10px 30px rgba(0,0,0,.35);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; color:var(--text); background:
-      radial-gradient(1200px 600px at 10% -10%, #15203a66, transparent),
-      radial-gradient(900px 500px at 110% 0%, #11223a66, transparent),
-      linear-gradient(#0b0b16,#0a0a14);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
-    display:flex; align-items:center; justify-content:center; padding:28px;
-  }
-  .wrap{width:100%; max-width:1120px}
-  header{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:18px}
-  .logo{
-    width:40px; height:40px; border-radius:12px;
-    background: radial-gradient(circle at 30% 30%, var(--accent), #00bfa5 55%, #008c72 100%);
-    box-shadow: 0 0 18px #00ffcc66, inset 0 -8px 20px #0006;
-    display:grid; place-items:center; color:#002a22; font-weight:900;
-    transform:rotate(12deg);
-  }
-  h1{
-    margin:0; font-size: clamp(22px, 4vw, 36px);
-    letter-spacing:.5px; text-shadow: 0 0 12px #00ffcc55, 0 0 24px #27e1ff33;
-  }
+:root {
+  --bg: #090b15;
+  --panel: #161b27;
+  --card: #1f2433;
+  --text: #eaf3ff;
+  --muted: #97a0b5;
+  --accent: #00ffcc;
+  --accent-2: #27e1ff;
+  --ok: #17d47b;
+  --warn: #ffc857;
+  --border: #2a3045;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
 
-  .grid{
-    display:grid; gap:16px;
-    grid-template-columns: 1.1fr .9fr;
-  }
-  @media (max-width:980px){ .grid{grid-template-columns: 1fr; } }
+/* fundo animado */
+body {
+  margin: 0;
+  height: 100vh;
+  color: var(--text);
+  background: radial-gradient(circle at top, #101426, #070a12);
+  background-size: 400% 400%;
+  animation: movebg 10s ease infinite;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+@keyframes movebg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-  .card{
-    background:linear-gradient(180deg,#1a1e2e,#171a26 220px);
-    border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow);
-  }
+/* Cabeçalho */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--accent), #00bfa5 70%);
+  box-shadow: 0 0 18px #00ffcc66, inset 0 -8px 20px #0006;
+  display: grid;
+  place-items: center;
+  color: #001f1a;
+  font-size: 22px;
+  font-weight: 900;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 15px #00ffcc99; }
+  50% { transform: scale(1.1); box-shadow: 0 0 30px #27e1ffcc; }
+}
+h1 {
+  margin: 0;
+  font-size: clamp(22px, 4vw, 36px);
+  letter-spacing: .5px;
+  text-shadow: 0 0 12px #00ffcc55, 0 0 24px #27e1ff33;
+}
+.topbar {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  gap: 12px;
+}
+.badge-top {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+.green { background: #0f4; color: #001a00; }
+.gold { background: #ffbf00; color: #2e1a00; }
 
-  /* Painel principal */
-  .panel{ padding:18px; }
-  .title{font-size:18px; color:var(--muted); margin-bottom:10px}
-  .row{display:grid; gap:10px; grid-template-columns: 1fr auto auto auto}
-  .row input[type="number"]{
-    background:#111522; color:#fff; border:1px solid var(--border); border-radius:10px;
-    padding:12px 14px; outline:none; font-size:15px; width:100%;
-  }
+/* Layout */
+.wrap {
+  width: 100%;
+  max-width: 1000px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 25px;
+}
 
-  /* 🔥 Botões visíveis e com brilho */
-  .btn{
-    border:none;
-    background:linear-gradient(135deg, var(--accent), var(--accent-2));
-    color:#001614; 
-    padding:12px 16px;
-    border-radius:10px; 
-    cursor:pointer; 
-    font-weight:700; 
-    letter-spacing:.4px;
-    box-shadow:0 0 12px #00ffcc99, 0 0 22px #27e1ff55;
-    transition:.2s transform ease, .2s filter ease;
-  }
-  .btn:hover{
-    transform:scale(1.07);
-    filter:brightness(1.15);
-  }
-  .btn.ok{
-    background:linear-gradient(135deg,var(--ok), #05aa62);
-    color:#00140b;
-    box-shadow:0 0 10px #17d47b88;
-  }
-  .btn.warn{
-    background:linear-gradient(135deg,var(--warn), #ffb347);
-    color:#221300;
-    box-shadow:0 0 10px #ffc85788;
-  }
+/* Botões */
+.btn {
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(0,0,0,0.4);
+}
+.btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px currentColor;
+}
+.btn.blue { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+.btn.green { background: linear-gradient(135deg, #00ff99, #009966); }
+.btn.gold { background: linear-gradient(135deg, #ffcc33, #ff8800); }
 
-  .result{
-    margin-top:14px; padding:14px; border:1px dashed var(--border);
-    border-radius:12px; display:flex; align-items:center; justify-content:space-between; gap:12px;
-  }
-  .badge{
-    padding:8px 12px; border-radius:999px; font-weight:800; letter-spacing:.3px;
-    box-shadow:0 0 0 1px #000 inset;
-  }
-  .badge.ok{ background:#0ff1; color:var(--ok); border:1px solid #1b6948 }
-  .badge.bad{ background:#f005; color:var(--bad); border:1px solid #6a2030 }
-  .muted{color:var(--muted); font-size:14px}
+input {
+  background: #0c1020;
+  color: #fff;
+  border: 1px solid #2a3045;
+  border-radius: 10px;
+  padding: 12px;
+  width: 200px;
+  outline: none;
+  font-size: 15px;
+}
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px #00ffcc88;
+}
 
-  /* Lado direito */
-  .side{ display:grid; gap:16px }
-  .hist, .stats, .chart{ padding:16px }
-  .hist ul{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
-  .pill{
-    padding:8px 10px; border:1px solid var(--border); border-radius:10px; display:flex; justify-content:space-between;
-    background: #12182a; font-size:14px;
-  }
-  .pill.ok{ border-color:#1b6948; background:#0a1712 }
-  .pill.bad{ border-color:#6a2030; background:#170a0e }
-  .mono{ font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace }
+/* Resultados */
+.result-box {
+  margin-top: 15px;
+  padding: 15px;
+  background: #12182a;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px dashed #2a3045;
+}
 
-  .stats-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap:10px; }
-  .stat{
-    background:#12182a; border:1px solid var(--border); border-radius:12px; padding:12px;
-    display:grid; gap:6px; place-content:center;
-  }
-  .stat b{ font-size:18px }
-  .chart canvas{ width:100%; height:220px; display:block; background:#111522; border:1px solid var(--border); border-radius:12px }
-
-  footer{margin-top:12px; text-align:center; color:var(--muted); font-size:12px}
+/* Gráfico e estatísticas */
+canvas {
+  background: #111522;
+  border: 1px solid #2a3045;
+  border-radius: 10px;
+  display: block;
+  margin: 20px auto;
+  width: 100%;
+  height: 200px;
+}
+.stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+.stats div {
+  background: #111522;
+  border-radius: 10px;
+  padding: 10px;
+  width: 22%;
+}
 </style>
 </head>
-
 <body>
+  <div class="topbar">
+    <div class="badge-top green">🟢 Servidor Ativo</div>
+    <div class="badge-top gold">🌟 Visual Premium</div>
+  </div>
+
+  <header>
+    <div class="logo">✈</div>
+    <h1>Simulador Aviator — Premium</h1>
+  </header>
+
   <div class="wrap">
-    <header>
-      <div class="logo">✈</div>
-      <h1>Simulador Aviator — Pro</h1>
-    </header>
-
-    <div class="grid">
-      <!-- Painel principal -->
-      <section class="card panel">
-        <div class="title">Insira um número (opcional) e simule um resultado</div>
-        <div class="row">
-          <input id="entrada" type="number" placeholder="Ex.: 7" />
-          <button id="btnSim" class="btn">Simular</button>
-          <button id="btnAuto" class="btn ok">Auto-Simular</button>
-          <button id="btnClear" class="btn warn">Limpar</button>
-        </div>
-
-        <div class="result" id="resultBox" style="display:none">
-          <div>
-            <div class="muted">Resultado</div>
-            <div id="resTexto" style="font-weight:800; font-size:18px">—</div>
-          </div>
-          <div id="resBadge" class="badge">—</div>
-        </div>
-      </section>
-
-      <!-- Lado direito -->
-      <section class="side">
-        <div class="card chart">
-          <div class="title">Gráfico (últimos 12)</div>
-          <canvas id="grafico" width="640" height="240"></canvas>
-        </div>
-
-        <div class="card stats">
-          <div class="title">Estatísticas</div>
-          <div class="stats-grid">
-            <div class="stat"><span class="muted">Total</span><b id="sTotal">0</b></div>
-            <div class="stat"><span class="muted">Favoráveis</span><b id="sOk">0</b></div>
-            <div class="stat"><span class="muted">Desfav.</span><b id="sBad">0</b></div>
-            <div class="stat"><span class="muted">Taxa</span><b id="sTaxa">0%</b></div>
-          </div>
-        </div>
-      </section>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <input id="entrada" type="number" placeholder="Ex: 7 (opcional)">
+      <button id="btnSim" class="btn blue">Simular</button>
+      <button id="btnAuto" class="btn green">Auto-Simular</button>
+      <button id="btnClear" class="btn gold">Limpar</button>
     </div>
 
-    <!-- Histórico -->
-    <section class="card hist" style="margin-top:16px">
-      <div class="title">Histórico (últimos 12)</div>
-      <ul id="lista"></ul>
-    </section>
+    <div id="resultBox" class="result-box" style="display:none;">
+      <h3 id="resTexto">Resultado...</h3>
+    </div>
 
-    <footer>Versão educativa. Mantém histórico no seu navegador (localStorage).</footer>
+    <canvas id="grafico" width="600" height="240"></canvas>
+
+    <div class="stats">
+      <div><b>Total</b><br><span id="sTotal">0</span></div>
+      <div><b>Favoráveis</b><br><span id="sOk">0</span></div>
+      <div><b>Desfav.</b><br><span id="sBad">0</span></div>
+      <div><b>Taxa</b><br><span id="sTaxa">0%</span></div>
+    </div>
   </div>
 
 <script>
@@ -182,10 +207,8 @@
   const btnSim = document.getElementById('btnSim');
   const btnAuto = document.getElementById('btnAuto');
   const btnClear = document.getElementById('btnClear');
-  const lista = document.getElementById('lista');
   const resultBox = document.getElementById('resultBox');
   const resTexto = document.getElementById('resTexto');
-  const resBadge = document.getElementById('resBadge');
   const sTotal = document.getElementById('sTotal');
   const sOk = document.getElementById('sOk');
   const sBad = document.getElementById('sBad');
@@ -194,7 +217,9 @@
   const ctx = canvas.getContext('2d');
   let auto = null;
 
-  function randBetween(min, max){ return Math.random()*(max-min)+min; }
+  function randBetween(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
   function gerarMultiplicadorRealista() {
     const r = Math.random();
@@ -205,111 +230,86 @@
     return Number(randBetween(20.00, 100.00).toFixed(2));
   }
 
-  function simular(){
+  function load() {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function save(arr) {
+    localStorage.setItem(storageKey, JSON.stringify(arr));
+  }
+
+  let hist = load().slice(-MAX);
+
+  function desenharGrafico() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const data = hist.map(h => h.multi);
+    if (!data.length) return;
+    const max = Math.max(10, ...data);
+    const pad = 20;
+    ctx.strokeStyle = "#00ffcc";
+    ctx.beginPath();
+    data.forEach((v, i) => {
+      const x = pad + (i / (data.length - 1)) * (canvas.width - pad * 2);
+      const y = canvas.height - ((v / max) * (canvas.height - pad * 2)) - pad;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+  }
+
+  function simular() {
     const multi = gerarMultiplicadorRealista();
     const favoravel = multi >= 2 ? Math.random() > .35 : Math.random() > .55;
-
     const registro = { t: new Date().toLocaleTimeString(), multi, ok: favoravel };
     hist.push(registro);
-    if(hist.length>MAX) hist = hist.slice(-MAX);
+    if (hist.length > MAX) hist = hist.slice(-MAX);
     save(hist);
-    pintarResultado(registro);
-    renderLista();
+    desenharGrafico();
+    const texto = favoravel ? `✅ Favorável — x${multi}` : `❌ Desfavorável — x${multi}`;
+    resTexto.textContent = texto;
+    resultBox.style.display = 'block';
     renderStats();
-    desenharGraficoAnimado();
   }
 
-  function pintarResultado(r){
-    resultBox.style.display = 'flex';
-    resTexto.textContent = r.ok ? `✅ Favorável — x${r.multi}` : `❌ Desfavorável — x${r.multi}`;
-    resBadge.className = 'badge ' + (r.ok ? 'ok':'bad');
-    resBadge.textContent = r.ok ? 'OK' : 'FALHOU';
-  }
-
-  function renderLista(){
-    lista.innerHTML = '';
-    [...hist].reverse().forEach((r)=>{ 
-      const li = document.createElement('li');
-      li.className = 'pill ' + (r.ok?'ok':'bad');
-      li.innerHTML = `<span class="mono">${r.t}</span><b class="mono">x${r.multi}</b>`;
-      lista.appendChild(li);
-    });
-  }
-
-  function renderStats(){
+  function renderStats() {
     const total = hist.length;
-    const oks = hist.filter(h=>h.ok).length;
+    const oks = hist.filter(h => h.ok).length;
     const bads = total - oks;
     sTotal.textContent = total;
     sOk.textContent = oks;
     sBad.textContent = bads;
-    sTaxa.textContent = total? Math.round((oks/total)*100)+'%' : '0%';
+    sTaxa.textContent = total ? Math.round((oks / total) * 100) + '%' : '0%';
   }
 
-  function desenharBase(){
-    ctx.clearRect(0,0,canvas.width, canvas.height);
-    ctx.fillStyle = '#0f1422';
-    ctx.fillRect(0,0,canvas.width, canvas.height);
-    ctx.strokeStyle = '#22304a';
-    for(let i=1;i<=5;i++){
-      const y = (canvas.height/6)*i;
-      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
-    }
-  }
-
-  function desenharGraficoAnimado(){
-    const data = hist.map(h=>h.multi);
-    const n = data.length;
-    if(n===0){ desenharBase(); return; }
-    const min = 0.8, max = Math.max(10, ...data);
-    const pad = 24;
-    const W = canvas.width - pad*2;
-    const H = canvas.height - pad*2;
-    const pts = data.map((v,i)=>{
-      const x = pad + (i/(n-1||1))*W;
-      const y = pad + (1-(v-min)/(max-min))*H;
-      return [x,y];
-    });
-    let p = 0;
-    function frame(){
-      desenharBase();
-      const grd = ctx.createLinearGradient(0,0,canvas.width,0);
-      grd.addColorStop(0, '#27e1ff');
-      grd.addColorStop(1, '#00ffcc');
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = grd;
-      ctx.beginPath();
-      ctx.moveTo(pts[0][0], pts[0][1]);
-      const maxI = Math.max(1, Math.floor(p*(pts.length-1)));
-      for(let i=1;i<=maxI;i++){
-        ctx.lineTo(pts[i][0], pts[i][1]);
-      }
-      ctx.stroke();
-      ctx.fillStyle = '#27e1ff';
-      for(let i=0;i<=maxI;i++){
-        ctx.beginPath(); ctx.arc(pts[i][0], pts[i][1], 3, 0, Math.PI*2); ctx.fill();
-      }
-      p += .08;
-      if(p<=1) requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  }
-
-  function clearAll(){
+  function clearAll() {
     hist = [];
     save(hist);
-    resultBox.style.display='none';
-    renderLista(); renderStats(); desenharGraficoAnimado();
+    desenharGrafico();
+    resultBox.style.display = 'none';
+    renderStats();
   }
 
-  function save(arr){ localStorage.setItem(storageKey, JSON.stringify(arr)); }
-  function load(){ try{ const raw = localStorage.getItem(storageKey); return raw ? JSON.parse(raw) : []; }catch(e){ return []; } }
-
-  let hist = load().slice(-MAX);
   btnSim.addEventListener('click', simular);
-  btnAuto.addEventListener('click', ()=> auto? (clearInterval(auto),auto=null,btnAuto.textContent='Auto-Simular') : (simular(),auto=setInterval(simular,1500),btnAuto.textContent='Parar Auto'));
+  btnAuto.addEventListener('click', () => {
+    if (auto) {
+      clearInterval(auto);
+      auto = null;
+      btnAuto.textContent = "Auto-Simular";
+    } else {
+      simular();
+      auto = setInterval(simular, 1500);
+      btnAuto.textContent = "Parar Auto";
+    }
+  });
   btnClear.addEventListener('click', clearAll);
-  renderLista(); renderStats(); desenharGraficoAnimado();
+
+  renderStats();
+  desenharGrafico();
 })();
 </script>
 </body>
