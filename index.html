@@ -3,147 +3,125 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulador Aviator — Premium</title>
-
+<title>Simulador Aviator — Premium Pro</title>
 <style>
-:root {
-  --bg: #090b15;
-  --panel: #161b27;
-  --card: #1f2433;
-  --text: #eaf3ff;
-  --muted: #97a0b5;
-  --accent: #00ffcc;
-  --accent-2: #27e1ff;
-  --ok: #17d47b;
-  --warn: #ffc857;
-  --border: #2a3045;
-  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
-}
-
-/* fundo animado */
 body {
   margin: 0;
-  height: 100vh;
-  color: var(--text);
-  background: radial-gradient(circle at top, #101426, #070a12);
-  background-size: 400% 400%;
-  animation: movebg 10s ease infinite;
+  background: radial-gradient(circle at top, #0b0f1e, #070a12);
+  color: #eaf3ff;
   font-family: "Segoe UI", Roboto, sans-serif;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-}
-@keyframes movebg {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Cabeçalho */
+/* --- CABEÇALHO --- */
 header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 .logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, var(--accent), #00bfa5 70%);
-  box-shadow: 0 0 18px #00ffcc66, inset 0 -8px 20px #0006;
-  display: grid;
-  place-items: center;
-  color: #001f1a;
-  font-size: 22px;
-  font-weight: 900;
+  font-size: 40px;
+  background: linear-gradient(135deg, #00ffcc, #27e1ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 15px #00ffcc99;
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 15px #00ffcc99; }
-  50% { transform: scale(1.1); box-shadow: 0 0 30px #27e1ffcc; }
+  0%, 100% { text-shadow: 0 0 10px #00ffcc88; }
+  50% { text-shadow: 0 0 25px #27e1ffcc; }
 }
 h1 {
+  font-size: 28px;
   margin: 0;
-  font-size: clamp(22px, 4vw, 36px);
-  letter-spacing: .5px;
-  text-shadow: 0 0 12px #00ffcc55, 0 0 24px #27e1ff33;
+  color: #eaf3ff;
+  text-shadow: 0 0 10px #00ffcc55;
 }
-.topbar {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  display: flex;
-  gap: 12px;
-}
-.badge-top {
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: bold;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-}
-.green { background: #0f4; color: #001a00; }
-.gold { background: #ffbf00; color: #2e1a00; }
 
-/* Layout */
-.wrap {
-  width: 100%;
-  max-width: 1000px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: var(--shadow);
+/* --- CONTAINER --- */
+.container {
+  width: 90%;
+  max-width: 800px;
+  background: #12172b;
+  border: 1px solid #2a3045;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
   padding: 25px;
 }
 
-/* Botões */
-.btn {
-  border: none;
-  padding: 12px 18px;
-  border-radius: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.3s;
-  color: #fff;
-  text-shadow: 0 0 5px rgba(0,0,0,0.4);
+/* --- LINHA DE BOTÕES --- */
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
 }
-.btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 18px currentColor;
-}
-.btn.blue { background: linear-gradient(135deg, #00c6ff, #0072ff); }
-.btn.green { background: linear-gradient(135deg, #00ff99, #009966); }
-.btn.gold { background: linear-gradient(135deg, #ffcc33, #ff8800); }
-
 input {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #27e1ff;
   background: #0c1020;
   color: #fff;
-  border: 1px solid #2a3045;
-  border-radius: 10px;
-  padding: 12px;
-  width: 200px;
+  font-size: 16px;
   outline: none;
-  font-size: 15px;
+  width: 200px;
+  text-align: center;
 }
 input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 10px #00ffcc88;
+  border-color: #00ffcc;
+  box-shadow: 0 0 12px #00ffcc66;
 }
 
-/* Resultados */
-.result-box {
-  margin-top: 15px;
-  padding: 15px;
-  background: #12182a;
+/* --- BOTÕES --- */
+button {
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 12px 20px !important;
+  font-weight: bold !important;
+  font-size: 15px !important;
+  cursor: pointer !important;
+  transition: 0.2s ease-in-out;
+  color: white !important;
+  text-shadow: 0 0 5px rgba(0,0,0,0.4);
+}
+button:hover { transform: scale(1.07); }
+
+#btnSim {
+  background: linear-gradient(135deg, #00c6ff, #0072ff) !important;
+  box-shadow: 0 0 12px #00c6ff88 !important;
+}
+#btnAuto {
+  background: linear-gradient(135deg, #00ff99, #009966) !important;
+  box-shadow: 0 0 12px #00ff9966 !important;
+}
+#btnClear {
+  background: linear-gradient(135deg, #ffcc33, #ff8800) !important;
+  box-shadow: 0 0 12px #ffcc3399 !important;
+}
+
+/* --- RESULTADO --- */
+#resultBox {
+  background: #0d1222;
   border-radius: 10px;
-  text-align: center;
+  padding: 15px;
   border: 1px dashed #2a3045;
+  text-align: center;
+  display: none;
+  color: #fff;
+  margin-top: 15px;
+}
+#resTexto {
+  font-weight: bold;
+  font-size: 18px;
 }
 
-/* Gráfico e estatísticas */
+/* --- GRÁFICO --- */
 canvas {
   background: #111522;
   border: 1px solid #2a3045;
@@ -153,56 +131,57 @@ canvas {
   width: 100%;
   height: 200px;
 }
+
+/* --- ESTATÍSTICAS --- */
 .stats {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+.stat {
+  background: #0f1322;
+  border-radius: 10px;
+  padding: 12px;
+  width: 22%;
   text-align: center;
 }
-.stats div {
-  background: #111522;
-  border-radius: 10px;
-  padding: 10px;
-  width: 22%;
-}
+.stat b { display: block; font-size: 18px; margin-top: 5px; }
 </style>
 </head>
-<body>
-  <div class="topbar">
-    <div class="badge-top green">🟢 Servidor Ativo</div>
-    <div class="badge-top gold">🌟 Visual Premium</div>
-  </div>
 
+<body>
   <header>
     <div class="logo">✈</div>
-    <h1>Simulador Aviator — Premium</h1>
+    <h1>Simulador Aviator — Premium Pro</h1>
   </header>
 
-  <div class="wrap">
-    <div style="display:flex;gap:10px;justify-content:center;">
+  <div class="container">
+    <div class="controls">
       <input id="entrada" type="number" placeholder="Ex: 7 (opcional)">
-      <button id="btnSim" class="btn blue">Simular</button>
-      <button id="btnAuto" class="btn green">Auto-Simular</button>
-      <button id="btnClear" class="btn gold">Limpar</button>
+      <button id="btnSim">Simular</button>
+      <button id="btnAuto">Auto-Simular</button>
+      <button id="btnClear">Limpar</button>
     </div>
 
-    <div id="resultBox" class="result-box" style="display:none;">
-      <h3 id="resTexto">Resultado...</h3>
+    <div id="resultBox">
+      <div id="resTexto">Resultado...</div>
     </div>
 
     <canvas id="grafico" width="600" height="240"></canvas>
 
     <div class="stats">
-      <div><b>Total</b><br><span id="sTotal">0</span></div>
-      <div><b>Favoráveis</b><br><span id="sOk">0</span></div>
-      <div><b>Desfav.</b><br><span id="sBad">0</span></div>
-      <div><b>Taxa</b><br><span id="sTaxa">0%</span></div>
+      <div class="stat"><span>Total</span><b id="sTotal">0</b></div>
+      <div class="stat"><span>Favoráveis</span><b id="sOk">0</b></div>
+      <div class="stat"><span>Desfav.</span><b id="sBad">0</b></div>
+      <div class="stat"><span>Taxa</span><b id="sTaxa">0%</b></div>
     </div>
   </div>
 
 <script>
 (() => {
   const MAX = 12;
-  const storageKey = "aviator_hist_v1";
+  const storageKey = "aviator_hist_v2";
   const entrada = document.getElementById('entrada');
   const btnSim = document.getElementById('btnSim');
   const btnAuto = document.getElementById('btnAuto');
