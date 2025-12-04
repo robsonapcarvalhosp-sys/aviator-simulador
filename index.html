@@ -279,14 +279,41 @@
   let hist = load().slice(-MAX);
 
   function randBetween(min, max){ return Math.random()*(max-min)+min; }
+function simular() {
+  const chute = entrada.value ? Number(entrada.value) : null;
 
-  function simular(){
-    const chute = entrada.value ? Number(entrada.value) : null;
+  // --- gerar multiplicador realista ---
+  const multi = gerarMultiplicadorRealista(); // usa a nova função criada antes
 
-    // multiplicador visual (1.00 a 100.00, com tendência suave)
-    const base = Math.random() < 0.85 ? randBetween(1, 12) : randBetween(12, 40);
-    const spike = Math.random() < 0.06 ? randBetween(40, 100) : 0;
-    const multi = Number((spike || base).toFixed(2));
+  // --- chance realista de favorável ---
+  let chance;
+  if (multi < 2) chance = 0.75;       // 75% de chance (baixos)
+  else if (multi < 5) chance = 0.55;  // 55% (médios)
+  else if (multi < 10) chance = 0.35; // 35% (altos)
+  else if (multi < 20) chance = 0.20; // 20% (muito altos)
+  else chance = 0.10;                  // 10% (spikes extremos)
+
+  const favoravel = Math.random() < chance;
+
+  // --- salvar e exibir ---
+  const registro = {
+    t: new Date().toLocaleTimeString(),
+    multi,
+    ok: favoravel,
+    chute
+  };
+
+  hist.push(registro);
+  if (hist.length > MAX) hist = hist.slice(-MAX);
+  save(hist);
+
+  pintarResultado(registro);
+  renderLista();
+  renderStats();
+  desenharGraficoAnimado();
+}
+
+ 
 
     // "favorável" puramente visual/educativo
     const favoravel = multi >= 2 ? Math.random() > .35 : Math.random() > .55;
