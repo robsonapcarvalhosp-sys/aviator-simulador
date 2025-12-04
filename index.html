@@ -1,4 +1,61 @@
-<script>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">✈</div>
+      <h1>Simulador Aviator — Pro</h1>
+    </header>
+
+    <div class="grid">
+      <!-- Painel principal -->
+      <section class="card panel">
+        <div class="title">Insira um número (opcional) e simule um resultado</div>
+        <div class="row">
+          <input id="entrada" type="number" placeholder="Ex.: 7" />
+          <button id="btnSim" class="btn primary">Simular</button>
+          <button id="btnAuto" class="btn ok">Auto-Simular</button>
+          <button id="btnClear" class="btn warn">Limpar</button>
+        </div>
+
+        <div class="result" id="resultBox" style="display:none">
+          <div>
+            <div class="muted">Resultado</div>
+            <div id="resTexto" style="font-weight:800; font-size:18px">—</div>
+          </div>
+          <div id="resBadge" class="badge">—</div>
+        </div>
+      </section>
+
+      <!-- Lado direito -->
+      <section class="side">
+        <div class="card chart">
+          <div class="title">Gráfico (últimos 12)</div>
+          <canvas id="grafico" width="640" height="240"></canvas>
+        </div>
+
+        <div class="card stats">
+          <div class="title">Estatísticas</div>
+          <div class="stats-grid">
+            <div class="stat"><span class="muted">Total</span><b id="sTotal">0</b></div>
+            <div class="stat"><span class="muted">Favoráveis</span><b id="sOk">0</b></div>
+            <div class="stat"><span class="muted">Desfav.</span><b id="sBad">0</b></div>
+            <div class="stat"><span class="muted">Taxa</span><b id="sTaxa">0%</b></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Histórico -->
+    <section class="card hist" style="margin-top:16px">
+      <div class="title">Histórico (últimos 12)</div>
+      <ul id="lista"></ul>
+    </section>
+
+    <footer>Versão educativa. Mantém histórico no seu navegador (localStorage).</footer>
+  </div>
+
+  <!-- SCRIPT FUNCIONAL -->
+  <script>
 (() => {
   const MAX = 12;
   const storageKey = "aviator_hist_v1";
@@ -11,227 +68,126 @@
   const resultBox = document.getElementById('resultBox');
   const resTexto = document.getElementById('resTexto');
   const resBadge = document.getElementById('resBadge');
-
   const sTotal = document.getElementById('sTotal');
   const sOk = document.getElementById('sOk');
   const sBad = document.getElementById('sBad');
   const sTaxa = document.getElementById('sTaxa');
-
   const canvas = document.getElementById('grafico');
   const ctx = canvas.getContext('2d');
   let auto = null;
 
-  // Funções utilitárias
-  function randBetween(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  function load() {
-    try {
-      const raw = localStorage.getItem(storageKey);
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function save(arr) {
-    localStorage.setItem(storageKey, JSON.stringify(arr));
-  }
+  function randBetween(min, max){ return Math.random()*(max-min)+min; }
+  function load(){ try{const r=localStorage.getItem(storageKey);return r?JSON.parse(r):[]}catch(e){return[];} }
+  function save(a){localStorage.setItem(storageKey,JSON.stringify(a));}
 
   let hist = load().slice(-MAX);
 
-  // Função de multiplicador realista
-  function gerarMultiplicadorRealista() {
-    const r = Math.random();
-    if (r < 0.60) return Number(randBetween(1.00, 2.50).toFixed(2)); // comuns
-    if (r < 0.85) return Number(randBetween(2.50, 5.00).toFixed(2)); // médios
-    if (r < 0.95) return Number(randBetween(5.00, 10.00).toFixed(2)); // altos
-    if (r < 0.99) return Number(randBetween(10.00, 20.00).toFixed(2)); // raros
-    return Number(randBetween(20.00, 100.00).toFixed(2)); // spikes
+  function gerarMultiplicadorRealista(){
+    const r=Math.random();
+    if(r<0.60)return Number(randBetween(1.00,2.50).toFixed(2));
+    if(r<0.85)return Number(randBetween(2.50,5.00).toFixed(2));
+    if(r<0.95)return Number(randBetween(5.00,10.00).toFixed(2));
+    if(r<0.99)return Number(randBetween(10.00,20.00).toFixed(2));
+    return Number(randBetween(20.00,100.00).toFixed(2));
   }
 
-  // Função principal
-  function simular() {
-    const chute = entrada.value ? Number(entrada.value) : null;
-
-    const multi = gerarMultiplicadorRealista();
-
-    // Probabilidade dinâmica (equilíbrio visual)
+  function simular(){
+    const chute=entrada.value?Number(entrada.value):null;
+    const multi=gerarMultiplicadorRealista();
     let chance;
-    if (multi < 2) chance = 0.75;
-    else if (multi < 5) chance = 0.55;
-    else if (multi < 10) chance = 0.35;
-    else if (multi < 20) chance = 0.20;
-    else chance = 0.10;
+    if(multi<2)chance=0.75;else if(multi<5)chance=0.55;
+    else if(multi<10)chance=0.35;else if(multi<20)chance=0.20;else chance=0.10;
+    const favoravel=Math.random()<chance;
 
-    const favoravel = Math.random() < chance;
-
-    const registro = {
-      t: new Date().toLocaleTimeString(),
-      multi,
-      ok: favoravel,
-      chute
-    };
-
-    hist.push(registro);
-    if (hist.length > MAX) hist = hist.slice(-MAX);
+    const r={t:new Date().toLocaleTimeString(),multi,ok:favoravel,chute};
+    hist.push(r);
+    if(hist.length>MAX)hist=hist.slice(-MAX);
     save(hist);
-
-    pintarResultado(registro);
+    pintarResultado(r);
     renderLista();
     renderStats();
     desenharGraficoAnimado();
   }
 
-  // Exibição de resultado
-  function pintarResultado(r) {
-    resultBox.style.display = 'flex';
-    resTexto.textContent = r.ok
-      ? `✅ Favorável — x${r.multi}`
-      : `❌ Desfavorável — x${r.multi}`;
-    resBadge.className = 'badge ' + (r.ok ? 'ok' : 'bad');
-    resBadge.textContent = r.ok ? 'OK' : 'FALHOU';
+  function pintarResultado(r){
+    resultBox.style.display='flex';
+    resTexto.textContent=r.ok?`✅ Favorável — x${r.multi}`:`❌ Desfavorável — x${r.multi}`;
+    resBadge.className='badge '+(r.ok?'ok':'bad');
+    resBadge.textContent=r.ok?'OK':'FALHOU';
   }
 
-  // Render histórico
-  function renderLista() {
-    lista.innerHTML = '';
-    [...hist].reverse().forEach((r) => {
-      const li = document.createElement('li');
-      li.className = 'pill ' + (r.ok ? 'ok' : 'bad');
-      li.innerHTML = `
-        <span class="mono">${r.t}</span>
-        <span class="mono">${r.chute !== null ? 'chute: ' + r.chute : ''}</span>
-        <b class="mono">x${r.multi}</b>
-      `;
+  function renderLista(){
+    lista.innerHTML='';
+    [...hist].reverse().forEach(r=>{
+      const li=document.createElement('li');
+      li.className='pill '+(r.ok?'ok':'bad');
+      li.innerHTML=`<span class="mono">${r.t}</span>
+      <span class="mono">${r.chute!==null?'chute:'+r.chute:''}</span>
+      <b class="mono">x${r.multi}</b>`;
       lista.appendChild(li);
     });
   }
 
-  // Render estatísticas
-  function renderStats() {
-    const total = hist.length;
-    const oks = hist.filter((h) => h.ok).length;
-    const bads = total - oks;
-    sTotal.textContent = total;
-    sOk.textContent = oks;
-    sBad.textContent = bads;
-    sTaxa.textContent = total
-      ? Math.round((oks / total) * 100) + '%'
-      : '0%';
+  function renderStats(){
+    const total=hist.length, oks=hist.filter(h=>h.ok).length, bads=total-oks;
+    sTotal.textContent=total; sOk.textContent=oks; sBad.textContent=bads;
+    sTaxa.textContent=total?Math.round((oks/total)*100)+'%':'0%';
   }
 
-  // Gráfico
-  function desenharBase() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#0f1422';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#22304a';
-    ctx.lineWidth = 1;
-    for (let i = 1; i <= 5; i++) {
-      const y = (canvas.height / 6) * i;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvas.width, y);
-      ctx.stroke();
-    }
+  function desenharBase(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#0f1422'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle='#22304a'; ctx.lineWidth=1;
+    for(let i=1;i<=5;i++){const y=(canvas.height/6)*i;
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();}
   }
 
-  function desenharGraficoAnimado() {
-    const data = hist.map((h) => h.multi);
-    const n = data.length;
-    if (n === 0) {
+  function desenharGraficoAnimado(){
+    const data=hist.map(h=>h.multi), n=data.length;
+    if(n===0){desenharBase();return;}
+    const min=0.8,max=Math.max(10,...data),pad=24,W=canvas.width-pad*2,H=canvas.height-pad*2;
+    const pts=data.map((v,i)=>{const x=pad+(i/(n-1||1))*W;
+      const y=pad+(1-(v-min)/(max-min))*H; return [x,y];});
+    let p=0;
+    function frame(){
       desenharBase();
-      return;
-    }
-
-    const min = 0.8,
-      max = Math.max(10, ...data);
-    const pad = 24;
-    const W = canvas.width - pad * 2;
-    const H = canvas.height - pad * 2;
-
-    const pts = data.map((v, i) => {
-      const x = pad + (i / (n - 1 || 1)) * W;
-      const y = pad + (1 - (v - min) / (max - min)) * H;
-      return [x, y];
-    });
-
-    let p = 0;
-    function frame() {
-      desenharBase();
-
-      ctx.fillStyle = '#6f7a90';
-      ctx.font = '12px ui-monospace, monospace';
-      ctx.fillText('últimos', 8, canvas.height - 8);
-
-      const grd = ctx.createLinearGradient(0, 0, canvas.width, 0);
-      grd.addColorStop(0, '#27e1ff');
-      grd.addColorStop(1, '#00ffcc');
-
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = grd;
-      ctx.beginPath();
-      ctx.moveTo(pts[0][0], pts[0][1]);
-      const maxI = Math.max(1, Math.floor(p * (pts.length - 1)));
-      for (let i = 1; i <= maxI; i++) {
-        ctx.lineTo(pts[i][0], pts[i][1]);
-      }
+      ctx.fillStyle='#6f7a90'; ctx.font='12px ui-monospace, monospace';
+      ctx.fillText('últimos',8,canvas.height-8);
+      const grd=ctx.createLinearGradient(0,0,canvas.width,0);
+      grd.addColorStop(0,'#27e1ff'); grd.addColorStop(1,'#00ffcc');
+      ctx.lineWidth=2; ctx.strokeStyle=grd; ctx.beginPath();
+      ctx.moveTo(pts[0][0],pts[0][1]);
+      const maxI=Math.max(1,Math.floor(p*(pts.length-1)));
+      for(let i=1;i<=maxI;i++){ctx.lineTo(pts[i][0],pts[i][1]);}
       ctx.stroke();
-
-      ctx.fillStyle = '#27e1ff';
-      for (let i = 0; i <= maxI; i++) {
-        ctx.beginPath();
-        ctx.arc(pts[i][0], pts[i][1], 3, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      p += 0.08;
-      if (p <= 1) requestAnimationFrame(frame);
+      ctx.fillStyle='#27e1ff';
+      for(let i=0;i<=maxI;i++){ctx.beginPath();ctx.arc(pts[i][0],pts[i][1],3,0,Math.PI*2);ctx.fill();}
+      p+=.08; if(p<=1)requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
   }
 
-  // Controle auto-simulação
-  function toggleAuto() {
-    if (auto) {
-      clearInterval(auto);
-      auto = null;
-      btnAuto.textContent = 'Auto-Simular';
-      btnAuto.classList.remove('ghost');
-      btnAuto.classList.add('ok');
-    } else {
-      simular();
-      auto = setInterval(simular, 1500);
-      btnAuto.textContent = 'Parar Auto';
-      btnAuto.classList.remove('ok');
-      btnAuto.classList.add('ghost');
+  function toggleAuto(){
+    if(auto){clearInterval(auto);auto=null;
+      btnAuto.textContent='Auto-Simular';btnAuto.classList.remove('ghost');btnAuto.classList.add('ok');
+    }else{
+      simular();auto=setInterval(simular,1500);
+      btnAuto.textContent='Parar Auto';btnAuto.classList.remove('ok');btnAuto.classList.add('ghost');
     }
   }
 
-  // Limpar histórico
-  function clearAll() {
-    hist = [];
-    save(hist);
-    resultBox.style.display = 'none';
-    renderLista();
-    renderStats();
-    desenharGraficoAnimado();
+  function clearAll(){
+    hist=[];save(hist);resultBox.style.display='none';
+    renderLista();renderStats();desenharGraficoAnimado();
   }
 
-  // Eventos
-  btnSim.addEventListener('click', simular);
-  btnAuto.addEventListener('click', toggleAuto);
-  btnClear.addEventListener('click', clearAll);
-  entrada.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') simular();
-  });
+  btnSim.addEventListener('click',simular);
+  btnAuto.addEventListener('click',toggleAuto);
+  btnClear.addEventListener('click',clearAll);
+  entrada.addEventListener('keydown',e=>{if(e.key==='Enter')simular();});
 
-  // Inicialização
-  renderLista();
-  renderStats();
-  desenharGraficoAnimado();
-  if (hist[hist.length - 1]) pintarResultado(hist[hist.length - 1]);
+  renderLista();renderStats();desenharGraficoAnimado();
+  if(hist[hist.length-1])pintarResultado(hist[hist.length-1]);
 })();
-</script>
+  </script>
+</body>
