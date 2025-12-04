@@ -3,70 +3,116 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Simulador Aviator — Pro</title>
+<title>Simulador Aviator — Edição Premium</title>
+<meta name="theme-color" content="#0b0f1e" />
 <style>
   :root{
-    --bg:#0b0b16; --panel:#171a26; --card:#1f2333; --text:#eaf3ff;
-    --muted:#97a0b5; --accent:#00ffcc; --accent-2:#27e1ff; --ok:#17d47b; --bad:#ff5577; --warn:#ffc857;
-    --border:#2a3045; --shadow:0 10px 30px rgba(0,0,0,.35);
+    --bg:#0b0f1e;
+    --panel:#11162b;
+    --panel-2:#0f1430;
+    --card:#151b39;
+    --text:#eaf3ff;
+    --muted:#9db0d1;
+    --accent:#00e5ff;
+    --accent-2:#6effa8;
+    --gold:#ffd36b;
+    --ok:#19d38c;
+    --bad:#ff5577;
+    --warn:#ffc857;
+    --line:#22345c;
+    --border:#24335a;
+    --shadow:0 12px 40px rgba(0,0,0,.45);
+    --radius:16px;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0; color:var(--text); background:
-      radial-gradient(1200px 600px at 10% -10%, #15203a66, transparent),
-      radial-gradient(900px 500px at 110% 0%, #11223a66, transparent),
-      linear-gradient(#0b0b16,#0a0a14);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
-    display:flex; align-items:center; justify-content:center; padding:28px;
-  }
-  .wrap{width:100%; max-width:1120px}
-  header{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:18px}
-  .logo{
-    width:40px; height:40px; border-radius:12px;
-    background: radial-gradient(circle at 30% 30%, var(--accent), #00bfa5 55%, #008c72 100%);
-    box-shadow: 0 0 18px #00ffcc66, inset 0 -8px 20px #0006;
-    display:grid; place-items:center; color:#002a22; font-weight:900;
-    transform:rotate(12deg);
-  }
-  h1{
-    margin:0; font-size: clamp(22px, 4vw, 36px);
-    letter-spacing:.5px; text-shadow: 0 0 12px #00ffcc55, 0 0 24px #27e1ff33;
+      radial-gradient(900px 600px at 110% -100px, #001f42aa, transparent 60%),
+      radial-gradient(1200px 700px at -10% -150px, #2a0050aa, transparent 60%),
+      linear-gradient(#070a14,#0b0f1e 30%, #0b0f1e);
+    font-family: system-ui,-apple-system,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
   }
 
-  .grid{
-    display:grid; gap:16px;
-    grid-template-columns: 1.1fr .9fr;
+  /* topo fixo estilo plataforma */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:saturate(140%) blur(10px);
+    background:linear-gradient(180deg, #0b1025cc, #0b0f1ecc);
+    border-bottom:1px solid #0e1a3c;
   }
-  @media (max-width:980px){ .grid{grid-template-columns: 1fr; } }
+  .topbar .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding:14px 18px; max-width:1200px; margin:auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px; font-weight:800;
+    letter-spacing:.3px; font-size:18px;
+  }
+  .logo{
+    width:38px; height:38px; border-radius:12px;
+    display:grid; place-items:center;
+    color:#012229; font-weight:900; transform:rotate(10deg);
+    background: radial-gradient(circle at 30% 30%, var(--accent), #00b8e0 55%, #0080a8 100%);
+    box-shadow: 0 0 18px #00e5ff66, inset 0 -8px 18px #0006;
+  }
+  .pulse{ animation:pulse 2s infinite ease-in-out }
+  @keyframes pulse{
+    0%,100%{ filter:drop-shadow(0 0 0 #00e5ff); transform:rotate(10deg) scale(1) }
+    50%{ filter:drop-shadow(0 0 12px #00e5ff88); transform:rotate(10deg) scale(1.05) }
+  }
+  .tag{
+    font-size:11px; padding:4px 8px; border-radius:999px;
+    background:#0e1a34; border:1px solid #1b2c57; color:var(--muted);
+  }
+  .statusbar{
+    display:flex; align-items:center; gap:10px;
+  }
+  .chip{
+    display:flex; gap:8px; align-items:center; padding:8px 10px;
+    background:#0d1533; border:1px solid #17285a; border-radius:12px;
+    font-weight:600; box-shadow: inset 0 0 0 1px #000;
+  }
+  .chip .dot{width:8px; height:8px; border-radius:50%}
+  .green{ background:var(--ok) }
+  .gold{ color:#1a1300; background:linear-gradient(135deg,#ffeaa0,#ffc057) }
+
+  .container{ max-width:1200px; margin:22px auto; padding:0 18px }
+  .layout{
+    display:grid; grid-template-columns: 1.2fr .8fr; gap:16px;
+  }
+  @media (max-width:1024px){ .layout{ grid-template-columns: 1fr } }
 
   .card{
-    background:linear-gradient(180deg,#1a1e2e,#171a26 220px);
-    border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow);
+    background:linear-gradient(180deg, var(--panel), var(--card) 220px);
+    border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);
   }
+  .card .hd{ padding:14px 16px; border-bottom:1px solid #1b2a50; color:var(--muted) }
+  .card .bd{ padding:16px }
 
-  /* Painel principal */
-  .panel{ padding:18px; }
-  .title{font-size:18px; color:var(--muted); margin-bottom:10px}
-  .row{display:grid; gap:10px; grid-template-columns: 1fr auto auto auto}
-  .row input[type="number"]{
-    background:#111522; color:#fff; border:1px solid var(--border); border-radius:10px;
-    padding:12px 14px; outline:none; font-size:15px; width:100%;
+  /* bloco esquerda */
+  .panel .inputs{
+    display:grid; grid-template-columns: 1fr auto auto auto; gap:10px;
+  }
+  .inp{
+    background:#0b1128; color:#fff; border:1px solid var(--border);
+    border-radius:12px; padding:14px; outline:none; font-size:16px;
   }
   .btn{
-    border:1px solid var(--border); background:#0f1422; color:#fff; padding:12px 14px;
-    border-radius:10px; cursor:pointer; font-weight:600; letter-spacing:.3px;
-    transition:.2s transform, .2s filter, .2s background;
+    border:1px solid var(--border); background:#0b1128; color:#fff;
+    padding:14px 16px; border-radius:12px; cursor:pointer; font-weight:700; letter-spacing:.2px;
+    transition:.2s transform,.2s filter,.2s background,.2s border-color;
   }
-  .btn:hover{ filter:brightness(1.08) }
-  .btn.primary{ background:linear-gradient(135deg,var(--accent), var(--accent-2)); color:#001614; border:0 }
-  .btn.ok{ background:linear-gradient(135deg,var(--ok), #05aa62); border:0; color:#00140b }
-  .btn.warn{ background:linear-gradient(135deg,var(--warn), #ffb347); border:0; color:#221300 }
-  .btn.ghost{ background:#0f1422; }
+  .btn:hover{ filter:brightness(1.06) }
+  .btn:active{ transform:scale(.98) }
+  .btn.primary{ background:linear-gradient(135deg,var(--accent),#3cf8ff); color:#001418; border:0 }
+  .btn.ok{ background:linear-gradient(135deg,var(--ok), #0fb973); color:#00140b; border:0 }
+  .btn.warn{ background:linear-gradient(135deg,var(--warn), #ffb347); color:#221300; border:0 }
 
   .result{
     margin-top:14px; padding:14px; border:1px dashed var(--border);
     border-radius:12px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:#0b1128;
   }
   .badge{
     padding:8px 12px; border-radius:999px; font-weight:800; letter-spacing:.3px;
@@ -74,91 +120,133 @@
   }
   .badge.ok{ background:#0ff1; color:var(--ok); border:1px solid #1b6948 }
   .badge.bad{ background:#f005; color:var(--bad); border:1px solid #6a2030 }
-  .muted{color:var(--muted); font-size:14px}
 
-  /* Lado direito */
-  .side{ display:grid; gap:16px }
-  .hist, .stats, .chart{ padding:16px }
+  /* histórico + gráfico (direita) */
   .hist ul{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
   .pill{
-    padding:8px 10px; border:1px solid var(--border); border-radius:10px; display:flex; justify-content:space-between;
-    background: #12182a; font-size:14px;
+    padding:9px 10px; border:1px solid var(--border); border-radius:10px; display:flex; justify-content:space-between;
+    background: #0f1534; font-size:14px;
   }
   .pill.ok{ border-color:#1b6948; background:#0a1712 }
   .pill.bad{ border-color:#6a2030; background:#170a0e }
   .mono{ font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace }
 
+  .chart canvas{ width:100%; height:220px; display:block; background:#0b1128; border:1px solid var(--border); border-radius:12px }
+
   .stats-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap:10px; }
   .stat{
-    background:#12182a; border:1px solid var(--border); border-radius:12px; padding:12px;
+    background:#0f1534; border:1px solid var(--border); border-radius:12px; padding:12px;
     display:grid; gap:6px; place-content:center;
   }
   .stat b{ font-size:18px }
-  .chart canvas{ width:100%; height:220px; display:block; background:#111522; border:1px solid var(--border); border-radius:12px }
 
-  footer{margin-top:12px; text-align:center; color:var(--muted); font-size:12px}
+  /* “avião” animado decorativo */
+  .sky{
+    position:relative; overflow:hidden; height:120px; border-bottom:1px solid #1b2a50;
+    background: linear-gradient(180deg, #0b1128, transparent);
+  }
+  .plane{
+    position:absolute; top:38px; left:-140px; display:flex; align-items:center; gap:8px;
+    color:#88f7ff; font-weight:800; letter-spacing:.4px; text-shadow:0 0 6px #00e5ff77;
+    animation:fly 9s linear infinite;
+  }
+  .plane .icon{
+    width:18px; height:18px; border-radius:50%; display:grid; place-items:center;
+    background: radial-gradient(circle at 30% 30%, var(--accent), #00b8e0 65%, #0080a8 100%);
+    box-shadow:0 0 14px #00e5ff77;
+  }
+  @keyframes fly{
+    0%{ transform:translateX(0) translateY(0) rotate(-2deg) }
+    40%{ transform:translateX(70vw) translateY(-16px) rotate(2deg) }
+    100%{ transform:translateX(110vw) translateY(0) rotate(0) }
+  }
+
+  footer{margin:18px 0; text-align:center; color:var(--muted); font-size:12px}
   a{ color:var(--accent); text-decoration:none }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">✈</div>
-      <h1>Simulador Aviator — Pro</h1>
-    </header>
 
-    <div class="grid">
-      <!-- Painel principal -->
+  <!-- TOPO -->
+  <div class="topbar">
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo pulse">✈</div>
+        <div>Simulador Aviator <span class="tag">educativo</span></div>
+      </div>
+      <div class="statusbar">
+        <div class="chip"><span class="dot green"></span><span>Servidor ativo</span></div>
+        <div class="chip gold">Visual Premium</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- animação decorativa -->
+    <div class="card sky">
+      <div class="plane">
+        <div class="icon">✈</div>
+        <div class="mono">simulação &nbsp;•&nbsp; tendência visual</div>
+      </div>
+    </div>
+
+    <!-- LAYOUT -->
+    <div class="layout">
+      <!-- ESQUERDA -->
       <section class="card panel">
-        <div class="title">Insira um número (opcional) e simule um resultado</div>
-        <div class="row">
-          <input id="entrada" type="number" placeholder="Ex.: 7" />
-          <button id="btnSim" class="btn primary">Simular</button>
-          <button id="btnAuto" class="btn ok">Auto-Simular</button>
-          <button id="btnClear" class="btn warn">Limpar</button>
+        <div class="hd">Simule um resultado — modo visual</div>
+        <div class="bd">
+          <div class="inputs">
+            <input id="entrada" class="inp" type="number" placeholder="Ex.: 7 (opcional)" />
+            <button id="btnSim" class="btn primary">Simular</button>
+            <button id="btnAuto" class="btn ok">Auto-Simular</button>
+            <button id="btnClear" class="btn warn">Limpar</button>
+          </div>
+
+          <div class="result" id="resultBox" style="display:none">
+            <div>
+              <div style="color:var(--muted); font-size:14px">Resultado</div>
+              <div id="resTexto" style="font-weight:800; font-size:18px">—</div>
+            </div>
+            <div id="resBadge" class="badge">—</div>
+          </div>
         </div>
 
-        <div class="result" id="resultBox" style="display:none">
-          <div>
-            <div class="muted">Resultado</div>
-            <div id="resTexto" style="font-weight:800; font-size:18px">—</div>
+        <div class="bd">
+          <div class="hd" style="border:0; padding:0 0 10px 0; color:var(--muted)">Gráfico (últimos 12)</div>
+          <div class="chart"><canvas id="grafico" width="640" height="240"></canvas></div>
+        </div>
+
+        <div class="bd">
+          <div class="hd" style="border:0; padding:0 0 10px 0; color:var(--muted)">Estatísticas</div>
+          <div class="stats-grid">
+            <div class="stat"><span style="color:var(--muted)">Total</span><b id="sTotal">0</b></div>
+            <div class="stat"><span style="color:var(--muted)">Favoráveis</span><b id="sOk">0</b></div>
+            <div class="stat"><span style="color:var(--muted)">Desfav.</span><b id="sBad">0</b></div>
+            <div class="stat"><span style="color:var(--muted)">Taxa</span><b id="sTaxa">0%</b></div>
           </div>
-          <div id="resBadge" class="badge">—</div>
         </div>
       </section>
 
-      <!-- Lado direito: chart + stats -->
-      <section class="side">
-        <div class="card chart">
-          <div class="title">Gráfico (últimos 12)</div>
-          <canvas id="grafico" width="640" height="240"></canvas>
-        </div>
-
-        <div class="card stats">
-          <div class="title">Estatísticas</div>
-          <div class="stats-grid">
-            <div class="stat"><span class="muted">Total</span><b id="sTotal">0</b></div>
-            <div class="stat"><span class="muted">Favoráveis</span><b id="sOk">0</b></div>
-            <div class="stat"><span class="muted">Desfav.</span><b id="sBad">0</b></div>
-            <div class="stat"><span class="muted">Taxa</span><b id="sTaxa">0%</b></div>
-          </div>
+      <!-- DIREITA -->
+      <section class="card hist">
+        <div class="hd">Histórico (últimos 12)</div>
+        <div class="bd">
+          <ul id="lista"></ul>
         </div>
       </section>
     </div>
 
-    <!-- Histórico -->
-    <section class="card hist" style="margin-top:16px">
-      <div class="title">Histórico (últimos 12)</div>
-      <ul id="lista"></ul>
-    </section>
-
-    <footer>Versão educativa. Mantém histórico no seu navegador (localStorage).</footer>
+    <footer>
+      Versão educativa. Não envolve apostas reais. Os dados gerados são aleatórios e armazenados apenas no seu dispositivo (localStorage).
+    </footer>
   </div>
 
 <script>
 (() => {
   const MAX = 12;
-  const storageKey = "aviator_hist_v1";
+  const storageKey = "aviator_hist_premium_v1";
 
   const entrada = document.getElementById('entrada');
   const btnSim = document.getElementById('btnSim');
@@ -194,10 +282,14 @@
 
   function simular(){
     const chute = entrada.value ? Number(entrada.value) : null;
-    // "multiplicador" aleatório estilo aviator (1.00 a 10.00)
-    const multi = Number(randBetween(1,10).toFixed(2));
-    // Regra simples para "favorável": metade dos casos
-    const favoravel = Math.random() >= 0.5;
+
+    // multiplicador visual (1.00 a 100.00, com tendência suave)
+    const base = Math.random() < 0.85 ? randBetween(1, 12) : randBetween(12, 40);
+    const spike = Math.random() < 0.06 ? randBetween(40, 100) : 0;
+    const multi = Number((spike || base).toFixed(2));
+
+    // "favorável" puramente visual/educativo
+    const favoravel = multi >= 2 ? Math.random() > .35 : Math.random() > .55;
 
     const registro = {
       t: new Date().toLocaleTimeString(),
@@ -222,7 +314,7 @@
 
   function renderLista(){
     lista.innerHTML = '';
-    [...hist].reverse().forEach((r,i)=>{
+    [...hist].reverse().forEach((r)=>{
       const li = document.createElement('li');
       li.className = 'pill ' + (r.ok?'ok':'bad');
       li.innerHTML = `
@@ -247,10 +339,10 @@
   function desenharBase(){
     // fundo
     ctx.clearRect(0,0,canvas.width, canvas.height);
-    ctx.fillStyle = '#0f1422';
+    ctx.fillStyle = '#0b1128';
     ctx.fillRect(0,0,canvas.width, canvas.height);
     // grade
-    ctx.strokeStyle = '#22304a';
+    ctx.strokeStyle = '#22345c';
     ctx.lineWidth = 1;
     for(let i=1;i<=5;i++){
       const y = (canvas.height/6)*i;
@@ -263,13 +355,11 @@
     const n = data.length;
     if(n===0){ desenharBase(); return; }
 
-    // normalizar pontos
     const min = 0.8, max = Math.max(10, ...data);
     const pad = 24;
     const W = canvas.width - pad*2;
     const H = canvas.height - pad*2;
 
-    // pontos (x,y)
     const pts = data.map((v,i)=>{
       const x = pad + (i/(n-1||1))*W;
       const y = pad + (1-(v-min)/(max-min))*H;
@@ -281,15 +371,10 @@
     function frame(){
       desenharBase();
 
-      // eixo x
-      ctx.fillStyle = '#6f7a90';
-      ctx.font = '12px ui-monospace, monospace';
-      ctx.fillText('últimos', 8, canvas.height-8);
-
       // linha gradiente
       const grd = ctx.createLinearGradient(0,0,canvas.width,0);
-      grd.addColorStop(0, '#27e1ff');
-      grd.addColorStop(1, '#00ffcc');
+      grd.addColorStop(0, '#6effa8');
+      grd.addColorStop(1, '#00e5ff');
 
       ctx.lineWidth = 2;
       ctx.strokeStyle = grd;
@@ -302,8 +387,7 @@
       }
       ctx.stroke();
 
-      // pontos
-      ctx.fillStyle = '#27e1ff';
+      ctx.fillStyle = '#00e5ff';
       for(let i=0;i<=maxI;i++){
         ctx.beginPath(); ctx.arc(pts[i][0], pts[i][1], 3, 0, Math.PI*2); ctx.fill();
       }
@@ -318,14 +402,14 @@
     if(auto){
       clearInterval(auto); auto=null;
       btnAuto.textContent = 'Auto-Simular';
-      btnAuto.classList.remove('ghost');
+      btnAuto.classList.remove('warn');
       btnAuto.classList.add('ok');
     }else{
       simular();
-      auto = setInterval(simular, 1500);
+      auto = setInterval(simular, 1400);
       btnAuto.textContent = 'Parar Auto';
       btnAuto.classList.remove('ok');
-      btnAuto.classList.add('ghost');
+      btnAuto.classList.add('warn');
     }
   }
 
